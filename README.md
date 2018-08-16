@@ -66,7 +66,7 @@ A CRON expression is a string representing the schedule for a particular command
   |    |    |    +--------------- day of month (1 - 31)
   |    |    +-------------------- hour (0 - 23)
   |    +------------------------- min (0 - 59)
-  +---------------------------- second (0-59)
+  +------------------------------ second (0-59)
 Requirements
 ============
 
