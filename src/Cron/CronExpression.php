@@ -23,12 +23,13 @@ use RuntimeException;
  */
 class CronExpression
 {
-    const MINUTE = 0;
-    const HOUR = 1;
-    const DAY = 2;
-    const MONTH = 3;
-    const WEEKDAY = 4;
-    const YEAR = 5;
+    const SECOND = 0;
+    const MINUTE = 1;
+    const HOUR = 2;
+    const DAY = 3;
+    const MONTH =4;
+    const WEEKDAY = 5;
+    const YEAR = 6;
 
     /**
      * @var array CRON expression parts
@@ -48,7 +49,7 @@ class CronExpression
     /**
      * @var array Order in which to test of cron parts
      */
-    private static $order = array(self::YEAR, self::MONTH, self::DAY, self::WEEKDAY, self::HOUR, self::MINUTE);
+    private static $order = array(self::YEAR, self::MONTH, self::DAY, self::WEEKDAY, self::HOUR, self::MINUTE,self::SECOND);
 
     /**
      * Factory method to create a new CronExpression.
@@ -126,12 +127,11 @@ class CronExpression
     public function setExpression($value)
     {
         $this->cronParts = preg_split('/\s/', $value, -1, PREG_SPLIT_NO_EMPTY);
-        if (count($this->cronParts) < 5) {
+        if (count($this->cronParts) < 6) {
             throw new InvalidArgumentException(
                 $value . ' is not a valid CRON expression'
             );
         }
-
         foreach ($this->cronParts as $position => $part) {
             $this->setPart($position, $part);
         }
@@ -333,7 +333,6 @@ class CronExpression
         if (is_null($timeZone)) {
             $timeZone = date_default_timezone_get();
         }
-        
         if ($currentTime instanceof DateTime) {
             $currentDate = clone $currentTime;
         } elseif ($currentTime instanceof DateTimeImmutable) {
@@ -343,8 +342,8 @@ class CronExpression
             $currentDate = new DateTime($currentTime ?: 'now');
             $currentDate->setTimezone(new DateTimeZone($timeZone));
         }
-
-        $currentDate->setTime($currentDate->format('H'), $currentDate->format('i'), 0);
+        
+        $currentDate->setTime($currentDate->format('H'), $currentDate->format('i'), $currentDate->format('s'));
         $nextRun = clone $currentDate;
         $nth = (int) $nth;
 
@@ -362,11 +361,11 @@ class CronExpression
 
         // Set a hard limit to bail on an impossible date
         for ($i = 0; $i < $this->maxIterationCount; $i++) {
-
             foreach ($parts as $position => $part) {
                 $satisfied = false;
                 // Get the field object used to validate this part
                 $field = $fields[$position];
+                
                 // Check if this is singular or a list
                 if (strpos($part, ',') === false) {
                     $satisfied = $field->isSatisfiedBy($nextRun, $part);
@@ -378,12 +377,13 @@ class CronExpression
                         }
                     }
                 }
-
+          
                 // If the field is not satisfied, then start over
                 if (!$satisfied) {
                     $field->increment($nextRun, $invert, $part);
                     continue 2;
                 }
+               
             }
 
             // Skip this match if needed

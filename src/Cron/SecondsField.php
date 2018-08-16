@@ -8,7 +8,7 @@ use DateTime;
 /**
  * Second field.  Allows: * , / -
  */
-class SecondField extends AbstractField
+class SecondsField extends AbstractField
 {
     protected $rangeStart = 0;
     protected $rangeEnd = 59;
@@ -30,31 +30,29 @@ class SecondField extends AbstractField
         }
 
         $parts = strpos($parts, ',') !== false ? explode(',', $parts) : array($parts);
-        $minutes = array();
+        $seconds = array();
         foreach ($parts as $part) {
-            $minutes = array_merge($minutes, $this->getRangeForExpression($part, 59));
+            $seconds = array_merge($seconds, $this->getRangeForExpression($part, 59));
         }
 
-        $current_minute = $date->format('s');
-        $position = $invert ? count($minutes) - 1 : 0;
-        if (count($minutes) > 1) {
-            for ($i = 0; $i < count($minutes) - 1; $i++) {
-                if ((!$invert && $current_minute >= $minutes[$i] && $current_minute < $minutes[$i + 1]) ||
-                    ($invert && $current_minute > $minutes[$i] && $current_minute <= $minutes[$i + 1])) {
+        $current_second = $date->format('s');
+        $position = $invert ? count($seconds) - 1 : 0;
+        if (count($seconds) > 1) {
+            for ($i = 0; $i < count($seconds) - 1; $i++) {
+                if ((!$invert && $current_second >= $seconds[$i] && $current_second < $seconds[$i + 1]) ||
+                    ($invert && $current_second > $seconds[$i] && $current_second <= $seconds[$i + 1])) {
                     $position = $invert ? $i : $i + 1;
                     break;
                 }
             }
         }
-
-        if ((!$invert && $current_minute >= $minutes[$position]) || ($invert && $current_minute <= $minutes[$position])) {
+        if ((!$invert && $current_second >= $seconds[$position]) || ($invert && $current_second <= $seconds[$position])) {
             $date->modify(($invert ? '-' : '+') . '1 minute');
-            $date->setTime($date->format('i'), $invert ? 59 : 0);
+            $date->setTime($date->format('H'), $date->format('i'),$invert ? 59 : 0);
         }
         else {
-            $date->setTime($date->format('i'), $minutes[$position]);
+            $date->setTime($date->format('H'), $date->format('i'),$seconds[$position]);
         }
-
         return $this;
     }
 }

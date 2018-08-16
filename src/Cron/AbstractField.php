@@ -46,7 +46,7 @@ abstract class AbstractField implements FieldInterface
      * @return bool
      */
     public function isSatisfied($dateValue, $value)
-    {
+    {     
         if ($this->isIncrementsOfRanges($value)) {
             return $this->isInIncrementsOfRanges($dateValue, $value);
         } elseif ($this->isRange($value)) {
