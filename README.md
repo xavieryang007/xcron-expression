@@ -55,7 +55,8 @@ CRON Expressions
 
 A CRON expression is a string representing the schedule for a particular command to execute.  The parts of a CRON schedule are as follows:
 
-基于Cron Expression开发，新增了对秒的判断
+基于Cron Expression开发，新增了对秒的判断 根据crontab时间格式计算下一次运行时间
+
 
   *    *    *    *    *    *
   -    -    -    -    -    -
