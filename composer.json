@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Cron\\": "src/Cron/"
+            "XCron\\": "src/Cron/"
         }
     },
     "autoload-dev": {
