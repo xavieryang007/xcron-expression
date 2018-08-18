@@ -1,6 +1,6 @@
 <?php
 
-namespace Cron;
+namespace XCron;
 use DateTime;
 use DateTimeZone;
 
