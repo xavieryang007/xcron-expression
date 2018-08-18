@@ -1,6 +1,6 @@
 <?php
 
-namespace Cron;
+namespace XCron;
 
 /**
  * Abstract CRON expression field
